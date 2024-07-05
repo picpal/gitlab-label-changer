@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 group = 'com.glc'
@@ -32,20 +31,20 @@ application {
     mainClass = 'com.glc.GitlabLabelChanger'
 }
 
+// Fat JAR configuration
 jar {
     manifest {
-        attributes 'Main-Class': 'com.glc.GitlabLabelChanger'
+        attributes(
+                'Main-Class': 'com.glc.GitlabLabelChanger'
+        )
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
     }
 }
-
-// shadow plugin configuration
-shadowJar {
-    archiveClassifier.set('')
-    manifest {
-        attributes 'Main-Class': 'com.glc.GitlabLabelChanger'
-    }
-}
-
 // utf-8 encoding
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
